@@ -1,0 +1,35 @@
+#include <stdio.h>
+int n, X, Y, opr, m, nextNode[100005],prevNode[100005];unsigned long long result=0;
+void Insert(int left,int right){//left插在right左边
+    if(nextNode[left]==right || left==right)//left已经在right左边或left=right的时候不操作
+        return;
+    prevNode[nextNode[left]]=prevNode[left];
+    nextNode[prevNode[left]]=nextNode[left];
+    nextNode[left]=right;prevNode[left]=prevNode[right];//插入left结点
+    nextNode[prevNode[right]]=left;prevNode[right]=left;//连接left结点
+}
+int main() {
+    scanf("%d%d", &n, &m);
+    result = 0;
+    for (int i = 1; i <= n; i++) {
+        nextNode[i] = i + 1;
+        prevNode[i] = i - 1;
+    }
+    nextNode[0] = 1;prevNode[n+1]=n;
+    for (int i = 1; i <= m; i++) {
+        scanf("%d%d%d", &opr, &X, &Y);
+        if (opr == 1)
+            Insert(X,Y);
+        else if (opr == 2) 
+            Insert(X,nextNode[Y]);
+        else if (opr == 3) {
+            int tmp=nextNode[X];
+            Insert(X,nextNode[Y]);
+            Insert(Y,tmp);
+        }
+    }
+    for (int i = nextNode[0];i>0 && i <= n; i = nextNode[nextNode[i]])
+        result +=  i;
+    printf("%llu", result);
+    return 0;
+}
